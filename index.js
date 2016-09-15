@@ -1,12 +1,36 @@
 'use strict';
-// const ghGot = require('gh-got');
 const path = require('path');
 const fs = require('mz/fs');
+const ghGot = require('gh-got');
 const expandHomeDir = require('expand-home-dir');
 const hostedGitInfo = require('hosted-git-info');
 
-function areAppreciated(/* githubAccessToken, repositories */) {
+function isStarredURL(githubInfo) {
+    return 'user/starred/' + githubInfo.user + '/' + githubInfo.repo;
+}
 
+function areAppreciated(githubAccessToken, moduleRepoInfos) {
+    let opts = {token: githubAccessToken};
+    return Promise.all(moduleRepoInfos.map(moduleRepoInfo => {
+        if (!moduleRepoInfo.error) {
+            return ghGot(isStarredURL(moduleRepoInfo.githubInfo), opts)
+                .then(
+                    () => {
+                        return Object.assign({}, moduleRepoInfo, {starred: true});
+                    },
+                    err => {
+                        if (err.statusCode === 404) {
+                            return Object.assign({}, moduleRepoInfo, {starred: false});
+                        }
+
+                        return Object.assign({}, moduleRepoInfo, {error: err});
+                    }
+                );
+        }
+
+        // The moduleRepoInfo has an error embedded in it.
+        return moduleRepoInfo;
+    }));
 }
 
 function findNodeModulesOnGithub(moduleNames, forProject, verbose) {

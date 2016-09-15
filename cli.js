@@ -10,7 +10,7 @@ const api = require('./');
 // No command line arguments so far.
 api.readAuthToken()
 .then(
-    () => {
+    token => {
         console.info('Reading package.json ...');
         fs.readFile('./package.json')
         .then(
@@ -25,15 +25,24 @@ api.readAuthToken()
                 console.error('Please execute this program in your Node project folder.');
                 return Promise.reject(null);
             }
-        ).then(githubInfos => {
-            githubInfos.forEach(x => {
+        ).then(moduleInfos => {
+            return api.areAppreciated(token, moduleInfos);
+        }).then(starredInfos => {
+            starredInfos.forEach(x => {
                 if (x.error) {
                     console.error(chalk.red(x.moduleName), '\t:', x.error);
                     return;
                 }
 
-                console.log(chalk.green(x.moduleName), '\t:', x.githubInfo.user + '/' + x.githubInfo.repo);
+                let githubName = x.githubInfo.user + '/' + x.githubInfo.repo;
+                if (x.starred) {
+                    console.log(chalk.green(x.moduleName), '\t:', githubName, 'is starred!');
+                } else {
+                    console.log(chalk.yellow(x.moduleName), '\t:', githubName, 'is not starred!');
+                }
             });
+        }).catch(err => {
+            console.error(chalk.red('Error: '), err);
         });
     },
     err => {
