@@ -131,8 +131,12 @@ test('should find Github info of node_modules', t => {
 
 test('should ignore missing/non-github modules', t => {
     return api.findNodeModulesOnGithub(['non-existent-module', 'no-git-module', 'no-repo-module', 'proper-git-module'], './test/').then(githubInfos => {
-        t.is(githubInfos.length, 1);
-        t.is(githubInfos[0].githubInfo.user, 'musically-ut');
-        t.is(githubInfos[0].githubInfo.repo, 'lovely-forks');
+        t.is(githubInfos.length, 4);
+        t.truthy(githubInfos[0].error);
+        t.truthy(githubInfos[1].error);
+        t.truthy(githubInfos[2].error);
+
+        t.is(githubInfos[3].githubInfo.user, 'musically-ut');
+        t.is(githubInfos[3].githubInfo.repo, 'lovely-forks');
     });
 });

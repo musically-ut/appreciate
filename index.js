@@ -26,22 +26,33 @@ function findNodeModulesOnGithub(moduleNames, forProject, verbose) {
                 if (verbose) {
                     console.error('Error: ', err, 'Ignoring file.');
                 }
-                return null;
+
+                return {
+                    moduleName: moduleName,
+                    error: 'package.json not found.'
+                };
             }
         );
     })).then(maybePkgJSONs => {
-        // Ignore all the failures to read package.json files.
-        return maybePkgJSONs.filter(Boolean);
-    }).then(pkgJSONs => {
         // Extract only those modules which have valid Github repository
         // information.
-        return pkgJSONs.map(x => {
-            return {
-                moduleName: x.moduleName,
-                githubInfo: getProjectUserRepo(x.pkgJSON)
-            };
-        }).filter(x => {
-            return Boolean(x.githubInfo);
+        return maybePkgJSONs.map(x => {
+            if (x.pkgJSON) {
+                let githubInfo = getProjectUserRepo(x.pkgJSON);
+
+                if (!githubInfo) {
+                    return {
+                        moduleName: x.moduleName,
+                        error: 'Not a Github repository.'
+                    };
+                }
+
+                return {
+                    moduleName: x.moduleName,
+                    githubInfo: githubInfo
+                };
+            }
+            return x;
         });
     });
 }
