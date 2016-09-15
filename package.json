@@ -4,7 +4,7 @@
   "description": "Appreciate the stuff you get for free to use.",
   "main": "index.js",
   "scripts": {
-    "test": "xo && ava"
+    "test": "xo && nyc ava"
   },
   "keywords": [
     "node",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "ava": "^0.16.0",
+    "nyc": "^8.3.0",
     "xo": "^0.16.0"
   },
   "xo": {
