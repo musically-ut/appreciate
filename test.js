@@ -107,3 +107,24 @@ test('ignores missing repo info', t => {
     const pkgJSON = {};
     t.is(api.getProjectUserRepo(pkgJSON), null);
 });
+
+test('should find Github info of node_modules', t => {
+    return api.findNodeModulesOnGithub(['xo', 'nyc', 'hosted-git-info', 'mz']).then(githubInfos => {
+        let g = {};
+        githubInfos.forEach(x => {
+            g[x.moduleName] = x.githubInfo;
+        });
+
+        t.is(g.xo.user, 'sindresorhus');
+        t.is(g.xo.repo, 'xo');
+
+        t.is(g.nyc.user, 'istanbuljs');
+        t.is(g.nyc.repo, 'nyc');
+
+        t.is(g.mz.user, 'normalize');
+        t.is(g.mz.repo, 'mz');
+
+        t.is(g['hosted-git-info'].user, 'npm');
+        t.is(g['hosted-git-info'].repo, 'hosted-git-info');
+    });
+});

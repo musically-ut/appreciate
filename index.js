@@ -1,16 +1,49 @@
 'use strict';
 // const ghGot = require('gh-got');
+const path = require('path');
 const fs = require('mz/fs');
 const expandHomeDir = require('expand-home-dir');
+const hostedGitInfo = require('hosted-git-info');
 
-function areAppreciated(/* githubAuthToken, dependentModules */) {
+function areAppreciated(/* githubAccessToken, repositories */) {
 
 }
 
-function findNodeModulesOnGithub(path) {
-    if (!path) {
-        path = './node_modules';
-    }
+function findNodeModulesOnGithub(moduleNames, forProject, verbose) {
+    forProject = forProject || '.';
+
+    let nodeModulesPath = path.join(forProject, 'node_modules');
+    return Promise.all(moduleNames.map(moduleName => {
+        let pkgJSONpath = path.join(nodeModulesPath, moduleName, 'package.json');
+        return fs.readFile(pkgJSONpath).then(
+            data => {
+                return {
+                    moduleName: moduleName,
+                    pkgJSON: JSON.parse(data.toString('utf8'))
+                };
+            },
+            err => {
+                if (verbose) {
+                    console.error('Error: ', err, 'Ignoring file.');
+                }
+                return null;
+            }
+        );
+    })).then(maybePkgJSONs => {
+        // Ignore all the failures to read package.json files.
+        return maybePkgJSONs.filter(Boolean);
+    }).then(pkgJSONs => {
+        // Extract only those modules which have valid Github repository
+        // information.
+        return pkgJSONs.map(x => {
+            return {
+                moduleName: x.moduleName,
+                githubInfo: getProjectUserRepo(x.pkgJSON)
+            };
+        }).filter(x => {
+            return Boolean(x.githubInfo);
+        });
+    });
 }
 
 function readAuthToken(authFile) {
