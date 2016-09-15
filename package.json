@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Appreciate the stuff you get for free.",
   "main": "index.js",
+  "bin": "cli.js",
   "scripts": {
     "test": "xo && nyc ava",
     "watch:test": "ava --watch"
@@ -17,6 +18,7 @@
   "author": "Utkarsh Upadhyay",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^1.1.3",
     "expand-home-dir": "0.0.3",
     "gh-got": "^5.0.0",
     "hosted-git-info": "^2.1.5",
