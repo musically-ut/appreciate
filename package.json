@@ -1,0 +1,29 @@
+{
+  "name": "appreciate",
+  "version": "0.0.1",
+  "description": "Appreciate the stuff you get for free to use.",
+  "main": "index.js",
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "keywords": [
+    "node",
+    "github",
+    "stars",
+    "appreciate"
+  ],
+  "author": "Utkarsh Upadhyay",
+  "license": "MIT",
+  "dependencies": {
+    "expand-home-dir": "0.0.3",
+    "gh-got": "^5.0.0",
+    "mz": "^2.4.0"
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "xo": "^0.16.0"
+  },
+  "xo": {
+    "space": 4
+  }
+}
