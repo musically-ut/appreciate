@@ -24,8 +24,16 @@ function readAuthToken(authFile) {
     });
 }
 
+function getProjectDependencies(packageJSON) {
+    let dependencies = packageJSON.dependencies ? Object.keys(packageJSON.dependencies) : [];
+    let devDependencies = packageJSON.devDependencies ? Object.keys(packageJSON.devDependencies) : [];
+
+    return dependencies.concat(devDependencies);
+}
+
 module.exports = {
     areAppreciated,
     readAuthToken,
-    findNodeModulesOnGithub
+    findNodeModulesOnGithub,
+    getProjectDependencies
 };
