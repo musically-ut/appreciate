@@ -1,7 +1,7 @@
 {
   "name": "appreciate",
   "version": "0.0.1",
-  "description": "Appreciate the stuff you get for free to use.",
+  "description": "Appreciate the stuff you get for free.",
   "main": "index.js",
   "scripts": {
     "test": "xo && nyc ava",
