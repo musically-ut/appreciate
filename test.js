@@ -1,14 +1,14 @@
 import test from 'ava';
-import appreciateApi from './';
+import api from './';
 
 test('successful parsing of auth token', t => {
-    return appreciateApi.readAuthToken('./test/sample_auth_token').then(result => {
+    return api.readAuthToken('./test/sample_auth_token').then(result => {
         t.is(result, '12345678901234567890abcdefabcdef12345678');
     });
 });
 
 test('unsuccessful parsing of auth token', t => {
-    t.throws(appreciateApi.readAuthToken('./test/non-existent-file'));
+    t.throws(api.readAuthToken('./test/non-existent-file'));
 });
 
 test('extracts dependencies correctly', t => {
@@ -24,7 +24,81 @@ test('extracts dependencies correctly', t => {
       '}                             ' +
     '}');
 
-    let deps = appreciateApi.getProjectDependencies(pkgJSON);
+    let deps = api.getProjectDependencies(pkgJSON);
     deps.sort();
     t.deepEqual(deps, ['ava', 'expand-home-dir', 'gh-got', 'mz', 'xo']);
+});
+
+test('extracts extended https Github repo info correctly', t => {
+    const pkgJSON = {
+        repository: {
+            type: 'git',
+            url: 'https://github.com/user/repo.git'
+        }
+    };
+
+    t.deepEqual(api.getProjectUserRepo(pkgJSON), {
+        user: 'user',
+        repo: 'repo'
+    });
+});
+
+test('extracts extended ssh Github repo info correctly 2', t => {
+    const pkgJSON = {
+        repository: {
+            type: 'git',
+            url: 'git@github.com:user/repo.git'
+        }
+    };
+
+    t.deepEqual(api.getProjectUserRepo(pkgJSON), {
+        user: 'user',
+        repo: 'repo'
+    });
+});
+
+test('extracts compact Github repo info correctly ', t => {
+    const pkgJSON = {
+        repository: 'user/repo'
+    };
+
+    t.deepEqual(api.getProjectUserRepo(pkgJSON), {
+        user: 'user',
+        repo: 'repo'
+    });
+});
+
+test('ignores non-git repo info', t => {
+    const pkgJSON = {
+        repository: {
+            type: 'svn',
+            url: 'https://some-repository.com/some-user/some-repo'
+        }
+    };
+
+    t.is(api.getProjectUserRepo(pkgJSON), null);
+});
+
+test('ignores Gist repo info', t => {
+    const pkgJSON = {
+        repository: 'gist:some-gist'
+    };
+
+    t.is(api.getProjectUserRepo(pkgJSON), null);
+});
+
+test('ignores BitBucket repo info', t => {
+    const pkgJSON = {
+        repository: 'bitbucket:example/repo'
+    };
+
+    t.is(api.getProjectUserRepo(pkgJSON), null);
+});
+
+test('ignores GitLab repo info', t => {
+    const pkgJSON = {
+        repository: 'gitlab:example/repo'
+    };
+
+    t.is(api.getProjectUserRepo(pkgJSON), null);
 });
