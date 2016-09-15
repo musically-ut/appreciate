@@ -102,3 +102,8 @@ test('ignores GitLab repo info', t => {
 
     t.is(api.getProjectUserRepo(pkgJSON), null);
 });
+
+test('ignores missing repo info', t => {
+    const pkgJSON = {};
+    t.is(api.getProjectUserRepo(pkgJSON), null);
+});
