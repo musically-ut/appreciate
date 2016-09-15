@@ -4,7 +4,8 @@
   "description": "Appreciate the stuff you get for free to use.",
   "main": "index.js",
   "scripts": {
-    "test": "xo && nyc ava"
+    "test": "xo && nyc ava",
+    "watch:test": "ava --watch"
   },
   "keywords": [
     "node",
