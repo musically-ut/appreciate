@@ -1,4 +1,6 @@
-# appreciate
+# appreciate 
+
+[![Build Status](https://travis-ci.org/musically-ut/appreciate.svg?branch=master)](https://travis-ci.org/musically-ut/appreciate)
 
 Appreciate the free stuff.
 
