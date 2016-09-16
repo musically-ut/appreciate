@@ -8,6 +8,7 @@
     "test": "xo && nyc ava",
     "watch:test": "ava --watch"
   },
+  "engine": "node >= 4.5.0",
   "keywords": [
     "node",
     "github",
