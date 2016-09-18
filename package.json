@@ -4,6 +4,7 @@
   "description": "Appreciate the stuff you get for free.",
   "main": "index.js",
   "bin": "cli.js",
+  "repository": "musically-ut/appreciate",
   "scripts": {
     "test": "xo && nyc ava",
     "watch:test": "ava --watch"
