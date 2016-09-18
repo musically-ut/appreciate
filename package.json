@@ -24,6 +24,7 @@
     "expand-home-dir": "0.0.3",
     "gh-got": "^5.0.0",
     "hosted-git-info": "^2.1.5",
+    "multispinner": "^0.2.1",
     "mz": "^2.4.0"
   },
   "devDependencies": {
