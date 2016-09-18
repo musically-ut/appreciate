@@ -140,3 +140,23 @@ test('should ignore missing/non-github modules', t => {
         t.is(githubInfos[3].githubInfo.repo, 'lovely-forks');
     });
 });
+
+test('isAppreciated should return error if moduleRepoInfo had an error in it', t => {
+    const sampleErr = 'Sample error.';
+    return api.isAppreciated('test-github-token', {error: sampleErr})
+            .then(moduleRepoInfo => {
+                t.is(moduleRepoInfo.error, sampleErr);
+            });
+});
+
+test('areAppreciated should return error if moduleRepoInfo had an error in it', t => {
+    const sampleErr = 'Sample error.';
+    return api.areAppreciated('test-github-token', [{error: sampleErr}])
+            .then(moduleRepoInfo => {
+                t.is(moduleRepoInfo[0].error, sampleErr);
+            });
+});
+
+test('isStarredURL should return the correct API URL', t => {
+    t.is(api.isStarredURL({user: 'test-user', repo: 'test-repo'}), 'user/starred/test-user/test-repo');
+});

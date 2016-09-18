@@ -9,27 +9,39 @@ function isStarredURL(githubInfo) {
     return 'user/starred/' + githubInfo.user + '/' + githubInfo.repo;
 }
 
-function areAppreciated(githubAccessToken, moduleRepoInfos) {
-    let opts = {token: githubAccessToken};
-    return Promise.all(moduleRepoInfos.map(moduleRepoInfo => {
-        if (!moduleRepoInfo.error) {
-            return ghGot(isStarredURL(moduleRepoInfo.githubInfo), opts)
-                .then(
-                    () => {
-                        return Object.assign({}, moduleRepoInfo, {starred: true});
-                    },
-                    err => {
-                        if (err.statusCode === 404) {
-                            return Object.assign({}, moduleRepoInfo, {starred: false});
-                        }
-
-                        return Object.assign({}, moduleRepoInfo, {error: err});
-                    }
-                );
-        }
-
+function isAppreciated(githubAccessToken, moduleRepoInfo) {
+    const opts = {token: githubAccessToken};
+    if (moduleRepoInfo.error) {
         // The moduleRepoInfo has an error embedded in it.
-        return moduleRepoInfo;
+        return Promise.resolve(moduleRepoInfo);
+    }
+
+    return ghGot(isStarredURL(moduleRepoInfo.githubInfo), opts)
+            .then(
+                () => {
+                    return Object.assign({}, moduleRepoInfo, {starred: true});
+                },
+                err => {
+                    if (err.statusCode === 404) {
+                        return Object.assign(
+                            {},
+                            moduleRepoInfo,
+                            {starred: false}
+                        );
+                    }
+
+                    return Object.assign(
+                        {},
+                        moduleRepoInfo,
+                        {error: err.statusMessage || 'Unknown error.'}
+                    );
+                }
+            );
+}
+
+function areAppreciated(githubAccessToken, moduleRepoInfos) {
+    return Promise.all(moduleRepoInfos.map(moduleRepoInfo => {
+        return isAppreciated(githubAccessToken, moduleRepoInfo);
     }));
 }
 
@@ -119,6 +131,8 @@ function getProjectUserRepo(packageJSON) {
 }
 
 module.exports = {
+    isStarredURL,
+    isAppreciated,
     areAppreciated,
     readAuthToken,
     findNodeModulesOnGithub,
