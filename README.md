@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/musically-ut/appreciate.svg?branch=master)](https://travis-ci.org/musically-ut/appreciate)
 
+![CLI example](docs/cli-example.gif)
+
 Appreciate the free stuff.
 
 Node's eco-system is exploding and there are a ton of open source code out there which gets used over and over again. However, it is easy to forget to say _thank-you_ whenever you use one of the projects.
