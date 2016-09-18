@@ -5,6 +5,7 @@ const fs = require('mz/fs');
 const Multispinner = require('multispinner');
 const expandHomeDir = require('expand-home-dir');
 const chalk = require('chalk');
+const dotsSpinner = require('cli-spinners').dots;
 
 const api = require('./');
 
@@ -69,6 +70,7 @@ api.readAuthToken()
             const spinnerNames = moduleInfos.map(x => {
                 return getGithubName(x);
             });
+            spinnerNames.sort();
 
             const maxPadding = Math.max.apply(
                 null,
@@ -77,10 +79,15 @@ api.readAuthToken()
                 })
             );
 
-            const spinners = new Multispinner(spinnerNames, {clear: false, autoStart: true});
+            const multiSpinners = new Multispinner(spinnerNames, {
+                clear: false,
+                autoStart: true,
+                frames: dotsSpinner.frames,
+                interval: dotsSpinner.interval
+            });
 
             return Promise.all(moduleInfos.map(x => {
-                return makeTask(token, x, spinners, maxPadding);
+                return makeTask(token, x, multiSpinners, maxPadding);
             }));
         }).catch(err => {
             console.error(chalk.red('Error: '), err);
