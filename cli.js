@@ -47,10 +47,10 @@ api.readAuthToken()
     },
     err => {
         const tokenFile = expandHomeDir('~/.appreciate');
-        console.error('Could not read the Access token from', tokenFile);
-        console.error('Error:', err);
+        console.error('Could not read the Access token from', chalk.blue(tokenFile));
+        console.error('Error:', chalk.red(err.message || err));
         console.error('Please generate an Github access token ' +
-                      'using the following URL and place it in', tokenFile);
-        console.error('\n\thttps://help.github.com/articles/creating-an-access-token-for-command-line-use/');
+                      'using the following URL and place it in', chalk.blue(tokenFile));
+        console.error(chalk.blue('\n\thttps://help.github.com/articles/creating-an-access-token-for-command-line-use/'));
     }
 );
