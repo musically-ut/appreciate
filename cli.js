@@ -36,7 +36,7 @@ function makeTask(token, moduleInfo, multiSpinners, maxPad) {
                 return;
             }
 
-            multiSpinners.spinners[githubName].text += padding + (x.starred ? chalk.blue('★ Starred.') : chalk.yellow('✩ Not starred!'));
+            multiSpinners.spinners[githubName].text += padding + (x.starred ? chalk.blue('★ Starred.') : chalk.yellow('☆ Not starred!'));
             multiSpinners.success(githubName);
             return Promise.resolve();
         },
