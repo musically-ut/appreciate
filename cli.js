@@ -9,7 +9,13 @@ const dotsSpinner = require('cli-spinners').dots;
 
 const api = require('./');
 
-function getGithubName(moduleInfo) {
+function getName(moduleInfo) {
+    if (moduleInfo.error) {
+        // If there was an error early on, then githubInfo may not be present
+        // in the moduleInfo at all.
+        return moduleInfo.moduleName;
+    }
+
     return moduleInfo.githubInfo.user + '/' + moduleInfo.githubInfo.repo;
 }
 
@@ -25,24 +31,24 @@ function makePadding(spaces) {
 }
 
 function makeTask(token, moduleInfo, multiSpinners, maxPad) {
-    const githubName = getGithubName(moduleInfo);
-    const padding = makePadding(maxPad - githubName.length + 1);
+    const moduleName = getName(moduleInfo);
+    const padding = makePadding(maxPad - moduleName.length + 1);
 
     return api.isAppreciated(token, moduleInfo).then(
         x => {
             if (x.error) {
-                multiSpinners.spinners[githubName].text += padding + chalk.red(x.error);
-                multiSpinners.error(githubName);
+                multiSpinners.spinners[moduleName].text += padding + chalk.red(x.error);
+                multiSpinners.error(moduleName);
                 return;
             }
 
-            multiSpinners.spinners[githubName].text += padding + (x.starred ? chalk.blue('★ Starred.') : chalk.yellow('☆ Not starred!'));
-            multiSpinners.success(githubName);
+            multiSpinners.spinners[moduleName].text += padding + (x.starred ? chalk.blue('★ Starred.') : chalk.yellow('☆ Not starred!'));
+            multiSpinners.success(moduleName);
             return Promise.resolve();
         },
         err => {
-            multiSpinners.spinners[githubName].text += padding + err;
-            multiSpinners.error(githubName);
+            multiSpinners.spinners[moduleName].text += padding + err;
+            multiSpinners.error(moduleName);
             return Promise.reject(err);
         }
     );
@@ -68,7 +74,7 @@ api.readAuthToken()
             }
         ).then(moduleInfos => {
             const spinnerNames = moduleInfos.map(x => {
-                return getGithubName(x);
+                return getName(x);
             });
             spinnerNames.sort();
 
