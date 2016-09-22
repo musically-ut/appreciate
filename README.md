@@ -28,6 +28,4 @@ Next, you will need to [generate an access token from your Github account](https
 
 Please report them on Github issues page at [musically-ut/appreciate](https://github.com/musically-ut/appreciate).
 
-----
-
-:smile:
+:sparkes: :smile:
