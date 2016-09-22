@@ -1,6 +1,5 @@
-#Say appreciate [![Build Status](https://travis-ci.org/musically-ut/appreciate.svg?branch=master)](https://travis-ci.org/musically-ut/appreciate)
+# appreciate [![Build Status](https://travis-ci.org/musically-ut/appreciate.svg?branch=master)](https://travis-ci.org/musically-ut/appreciate)
 > Did you say _thank you_ to your node dependencies?
-
 
 ```
 npm install -g appreciate
@@ -20,7 +19,9 @@ Run this program in the directory of your node project to see which packages you
 
 Just install the library globally:
 
-> npm install -g appreciate
+```
+npm install -g appreciate
+```
 
 Next, you will need to [generate an access token from your Github account](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) without any special scopes and put the token string in the file `~/.appreciate`, as shown in the example above.
 
