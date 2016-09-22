@@ -1,6 +1,6 @@
 {
   "name": "appreciate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Did you say thank you to your node dependencies?",
   "main": "index.js",
   "bin": "cli.js",
