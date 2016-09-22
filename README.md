@@ -7,7 +7,7 @@ npm install -g appreciate
 
 ![CLI example](docs/cli-example.gif)
 
-## What and Why
+## What & Why
 
 Node's eco-system is exploding and there is a lot of open source code out there which gets used over and over again. However, it is easy to forget to say _thank you_ when you `npm install --save` one of the projects to try it in your own project.
 
