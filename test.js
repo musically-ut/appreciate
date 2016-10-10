@@ -160,3 +160,34 @@ test('areAppreciated should return error if moduleRepoInfo had an error in it', 
 test('isStarredURL should return the correct API URL', t => {
     t.is(api.isStarredURL({user: 'test-user', repo: 'test-repo'}), 'user/starred/test-user/test-repo');
 });
+
+test('getName should return repository name for valid moduleInfo', t => {
+    t.is(api.getName({githubInfo: {user: 'user', repo: 'repo'}}), 'user/repo');
+});
+
+test('getName should return moduleName for invalid moduleInfo', t => {
+    t.is(api.getName({moduleName: 'module', error: 'Could not open package.json'}), 'module');
+});
+
+test('getUniqueRepos should return only one entry for each repository', t => {
+    let moduleInfos = [
+        {
+            moduleName: 'react',
+            githubInfo: {
+                user: 'facebook',
+                repo: 'react'
+            }
+        },
+        {
+            moduleName: 'react-dom',
+            githubInfo: {
+                user: 'facebook',
+                repo: 'react'
+            }
+        }
+    ];
+
+    let uniqueRepos = api.getUniqueRepos(moduleInfos);
+    t.is(uniqueRepos.length, 1);
+    t.is(api.getName(uniqueRepos[0]), 'facebook/react');
+});

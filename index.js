@@ -9,6 +9,16 @@ function isStarredURL(githubInfo) {
     return 'user/starred/' + githubInfo.user + '/' + githubInfo.repo;
 }
 
+function getName(moduleInfo) {
+    if (moduleInfo.error) {
+        // If there was an error early on, then githubInfo may not be present
+        // in the moduleInfo at all.
+        return moduleInfo.moduleName;
+    }
+
+    return moduleInfo.githubInfo.user + '/' + moduleInfo.githubInfo.repo;
+}
+
 function isAppreciated(githubAccessToken, moduleRepoInfo) {
     const opts = {token: githubAccessToken};
     if (moduleRepoInfo.error) {
@@ -93,6 +103,20 @@ function findNodeModulesOnGithub(moduleNames, forProject, verbose) {
     });
 }
 
+function getUniqueRepos(mbModuleInfos) {
+    // Keep only one moduleInfo for one repository.
+    // This is because more than one module can point to the same repository.
+    // The ties are broken in an arbitrary way.
+    // See #2.
+
+    let uniqueModuleMap = {};
+    mbModuleInfos.forEach(x => {
+        uniqueModuleMap[getName(x)] = x;
+    });
+
+    return Object.keys(uniqueModuleMap).map(x => uniqueModuleMap[x]);
+}
+
 function readAuthToken(authFile) {
     if (!authFile) {
         authFile = expandHomeDir('~/.appreciate');
@@ -137,5 +161,7 @@ module.exports = {
     readAuthToken,
     findNodeModulesOnGithub,
     getProjectDependencies,
-    getProjectUserRepo
+    getProjectUserRepo,
+    getName,
+    getUniqueRepos
 };

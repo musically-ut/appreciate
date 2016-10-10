@@ -9,16 +9,6 @@ const dotsSpinner = require('cli-spinners').dots;
 
 const api = require('./');
 
-function getName(moduleInfo) {
-    if (moduleInfo.error) {
-        // If there was an error early on, then githubInfo may not be present
-        // in the moduleInfo at all.
-        return moduleInfo.moduleName;
-    }
-
-    return moduleInfo.githubInfo.user + '/' + moduleInfo.githubInfo.repo;
-}
-
 function makePadding(spaces) {
     if (spaces === 0) {
         return '';
@@ -31,7 +21,7 @@ function makePadding(spaces) {
 }
 
 function makeTask(token, moduleInfo, multiSpinners, maxPad) {
-    const moduleName = getName(moduleInfo);
+    const moduleName = api.getName(moduleInfo);
     const padding = makePadding(maxPad - moduleName.length + 1);
 
     return api.isAppreciated(token, moduleInfo).then(
@@ -72,10 +62,14 @@ api.readAuthToken()
                 console.error('Please execute this program in your Node project folder.');
                 return Promise.reject(null);
             }
-        ).then(moduleInfos => {
-            const spinnerNames = moduleInfos.map(x => {
-                return getName(x);
+        ).then(moduleInfos => api.getUniqueRepos(moduleInfos))
+        .then(uniqueModuleInfos => {
+            // make the repository names unique to allow for multiple packages
+            // pointing to the same repository.
+            const spinnerNames = uniqueModuleInfos.map(x => {
+                return api.getName(x);
             });
+
             spinnerNames.sort();
 
             const maxPadding = Math.max.apply(
@@ -92,7 +86,7 @@ api.readAuthToken()
                 interval: dotsSpinner.interval
             });
 
-            return Promise.all(moduleInfos.map(x => {
+            return Promise.all(uniqueModuleInfos.map(x => {
                 return makeTask(token, x, multiSpinners, maxPadding);
             }));
         }).catch(err => {
