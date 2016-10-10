@@ -9,6 +9,16 @@ function isStarredURL(githubInfo) {
     return 'user/starred/' + githubInfo.user + '/' + githubInfo.repo;
 }
 
+function getAppreciateModuleInfo() {
+    return {
+        moduleName: 'appreciate',
+        githubInfo: {
+            user: 'musically-ut',
+            repo: 'appreciate'
+        }
+    };
+}
+
 function getName(moduleInfo) {
     if (moduleInfo.error) {
         // If there was an error early on, then githubInfo may not be present
@@ -163,5 +173,7 @@ module.exports = {
     getProjectDependencies,
     getProjectUserRepo,
     getName,
-    getUniqueRepos
+    getUniqueRepos,
+    getAppreciateModuleInfo
+
 };

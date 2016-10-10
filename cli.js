@@ -44,11 +44,26 @@ function makeTask(token, moduleInfo, multiSpinners, maxPad) {
     );
 }
 
+function checkIsAppreciateAppreciated(token, multiSpinners) {
+    return api.isAppreciated(token, api.getAppreciateModuleInfo()).then(
+        x => {
+            if (x.error) {
+                return null;
+            }
+
+            return {
+                multiSpinners: multiSpinners,
+                starred: x.starred
+            };
+        }
+    );
+}
+
 // No command line arguments so far.
 api.readAuthToken()
 .then(
     token => {
-        console.info('Project dependencies: ');
+        console.info(chalk.cyan('Project dependencies: '));
         fs.readFile('./package.json')
         .then(
             data => {
@@ -86,10 +101,30 @@ api.readAuthToken()
                 interval: dotsSpinner.interval
             });
 
-            return Promise.all(uniqueModuleInfos.map(x => {
+            let allModuleInfos = uniqueModuleInfos.map(x => {
                 return makeTask(token, x, multiSpinners, maxPadding);
-            }));
-        }).catch(err => {
+            });
+
+            // Place checking for musically-ut/appreciate at the top of the
+            // list for recovery afterwards.
+            allModuleInfos.unshift(checkIsAppreciateAppreciated(token, multiSpinners));
+
+            return Promise.all(allModuleInfos);
+        })
+        .then(allModuleInfosResolved => {
+            const appreciatedInfo = allModuleInfosResolved[0];
+            if (appreciatedInfo && !appreciatedInfo.starred) {
+                // Shameless self-plug.
+                appreciatedInfo.multiSpinners.on('done', () => {
+                    console.log(chalk.cyan(
+                        'Please also consider starring ' +
+                         chalk.green('musically-ut/appreciate') +
+                        '! ✨'
+                    ));
+                });
+            }
+        })
+        .catch(err => {
             console.error(chalk.red('Error: '), err);
         });
     },

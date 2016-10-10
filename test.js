@@ -191,3 +191,10 @@ test('getUniqueRepos should return only one entry for each repository', t => {
     t.is(uniqueRepos.length, 1);
     t.is(api.getName(uniqueRepos[0]), 'facebook/react');
 });
+
+test('getAppreciateModuleInfo should return appreciate\'s module info.', t => {
+    const appreciateInfo = api.getAppreciateModuleInfo();
+    t.is(appreciateInfo.moduleName, 'appreciate');
+    t.is(appreciateInfo.githubInfo.user, 'musically-ut');
+    t.is(appreciateInfo.githubInfo.repo, 'appreciate');
+});
